@@ -8,7 +8,6 @@ using Xunit;
 
 namespace UserManagement.Test
 {
-    [TestClass]
     public class CreateUserCommandHandlerTests
     {
         private readonly Mock<IUserRepository> _userRepositoryMock;

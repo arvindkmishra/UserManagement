@@ -1,13 +1,23 @@
 ﻿using MediatR;
 using UserManagement.Domain.Commands;
+using UserManagement.Domain.Repositories;
 
 namespace UserManagement.Core.Handlers
 {
     public class UpdateUserHandler : IRequestHandler<UpdateUserCommand>
     {
-        public Task Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+        private readonly IUserRepository _userRepository;
+
+        public UpdateUserHandler(IUserRepository userRepository)
         {
-            throw new NotImplementedException();
+            _userRepository = userRepository;
+        }
+
+        public async Task Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+        {
+            var user = await _userRepository.GetByIdAsync(request.Id);
+            user.Update(request.Name, request.Email);
+            await _userRepository.UpdateAsync(user);
         }
     }
 }

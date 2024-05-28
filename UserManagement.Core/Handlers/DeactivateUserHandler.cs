@@ -1,13 +1,23 @@
 ﻿using MediatR;
 using UserManagement.Domain.Commands;
+using UserManagement.Domain.Repositories;
 
 namespace UserManagement.Core.Handlers
 {
     public class DeactivateUserHandler : IRequestHandler<DeactivateUserCommand>
     {
-        public Task Handle(DeactivateUserCommand request, CancellationToken cancellationToken)
+        private readonly IUserRepository _userRepository;
+
+        public DeactivateUserHandler(IUserRepository userRepository)
         {
-            throw new NotImplementedException();
+            _userRepository = userRepository;
+        }
+
+        public async Task Handle(DeactivateUserCommand request, CancellationToken cancellationToken)
+        {
+            var user = await _userRepository.GetByIdAsync(request.Id);
+            user.Deactivate();
+            await _userRepository.UpdateAsync(user);
         }
     }
 }

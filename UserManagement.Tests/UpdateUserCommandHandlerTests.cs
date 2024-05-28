@@ -7,32 +7,31 @@ using Xunit;
 
 namespace UserManagement.Test
 {
-    [TestClass]
-    public class DeactivateUserCommandHandlerTests
+    public class UpdateUserCommandHandlerTests
     {
         private readonly Mock<IUserRepository> _userRepositoryMock;
-        private readonly DeactivateUserHandler _handler;
+        private readonly UpdateUserHandler _handler;
 
-        public DeactivateUserCommandHandlerTests()
+        public UpdateUserCommandHandlerTests()
         {
             _userRepositoryMock = new Mock<IUserRepository>();
-            _handler = new DeactivateUserHandler();
+            _handler = new UpdateUserHandler(_userRepositoryMock.Object);
         }
 
         [Fact]
-        public async Task Handle_Should_DeactivateUser()
+        public async Task Handle_Should_UpdateUser()
         {
             // Arrange
             var user = new User("Arvind Mishra", "arvind@gmail.com");
             _userRepositoryMock.Setup(repo => repo.GetByIdAsync(user.Id)).ReturnsAsync(user);
 
-            var command = new DeactivateUserCommand { Id = user.Id };
+            var command = new UpdateUserCommand { Id = user.Id, Name = "Arvind Mishra", Email = "arvind@gmail.com" };
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _userRepositoryMock.Verify(repo => repo.UpdateAsync(It.Is<User>(u => u.Id == user.Id && !u.IsActive)), Times.Once);
+            _userRepositoryMock.Verify(repo => repo.UpdateAsync(It.Is<User>(u => u.Id == user.Id && u.Name == command.Name && u.Email == command.Email)), Times.Once);
         }
     }
 }
