@@ -1,11 +1,12 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Configuration;
 using UserManagement.Domain.Commands;
 
 namespace UserManagement.Infrastructure.Messaging
 {
     public class UserDeactivationConsumer : BaseUserMessageConsumer
     {
-        public UserDeactivationConsumer(IMediator mediator) : base("userDeactivationQueue", mediator) { }
+        public UserDeactivationConsumer(IMediator mediator, IConfiguration configuration) : base("userDeactivationQueue", mediator, configuration) { }
 
         protected override async Task ProcessMessageAsync(string message)
         {

@@ -11,7 +11,7 @@ namespace UserManagement.Infrastructure.Services
 
         public UserRepository(IConfiguration configuration)
         {
-            var client = new MongoClient(configuration.GetConnectionString("mongoDb"));
+            var client = new MongoClient(configuration["MongoDB:ConnectionString"]);
             var database = client.GetDatabase("UserDb");
             _users = database.GetCollection<User>("Users");
         }

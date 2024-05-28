@@ -1,11 +1,12 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Configuration;
 using UserManagement.Domain.Commands;
 
 namespace UserManagement.Infrastructure.Messaging
 {
     public class UserCreationConsumer : BaseUserMessageConsumer
     {
-        public UserCreationConsumer(IMediator mediator) : base("userCreationQueue", mediator) { }
+        public UserCreationConsumer(IMediator mediator, IConfiguration configuration) : base("userCreationQueue", mediator, configuration) { }
 
         protected override async Task ProcessMessageAsync(string message)
         {

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -12,10 +13,14 @@ namespace UserManagement.Infrastructure.Messaging
         protected readonly IModel _channel;
         protected readonly IMediator _mediator;
 
-        protected BaseUserMessageConsumer(string queueName, IMediator mediator)
+        protected BaseUserMessageConsumer(string queueName, IMediator mediator, IConfiguration configuration)
         {
             _mediator = mediator;
-            var factory = new ConnectionFactory() { HostName = "localhost" };
+            var factory = new ConnectionFactory()
+            {
+                HostName = configuration["RabbitMQ:Host"],
+                Port = Convert.ToInt32(configuration["RabbitMQ:Port"])
+            };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
             _channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
